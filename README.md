@@ -25,7 +25,7 @@ git submodule update --init --recursive
 Copy-Item flclash-official/env.example.json flclash-official/env.json
 ```
 
-示例配置保持当前预发布环境；需要取消右上角预发布角标时，将本机 `env.json` 的 `APP_ENV` 改成 `stable`，然后重新构建。
+示例配置默认使用 `stable` 环境，不显示右上角预发布角标。已有工作区需要同时将本机 `env.json` 的 `APP_ENV` 改成 `stable` 并重新构建；仅更新仓库不会改变已安装的旧版本。
 
 ```powershell
 .\build-flclash-android.ps1 -Mode release -SplitPerAbi
