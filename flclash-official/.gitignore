@@ -45,13 +45,18 @@ app.*.map.json
 .claude/settings.local.json
 
 # Documentation (generated/planning artifacts)
-docs/
+/docs/*
+!/docs/复古界面还原说明.md
+!/docs/ui/
+/docs/ui/*
+!/docs/ui/retro-*.png
 
 
 # Android Studio will place build artifacts here
 /android/app/debug
 /android/app/profile
 /android/app/release
+/android/.kotlin/
 /android/**/.cxx
 /android/**/build
 /android/common/**/.**/

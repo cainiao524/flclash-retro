@@ -814,7 +814,33 @@ class MessageLookup extends MessageLookupByLibrary {
       "Override",
     ),
     "restoreSuccess": MessageLookupByLibrary.simpleMessage("Restore success"),
+    "retroAllProxies": MessageLookupByLibrary.simpleMessage(
+      "All proxy settings and latency tests",
+    ),
+    "retroAutomaticGroup": MessageLookupByLibrary.simpleMessage(
+      "Automatic group; manage it in full proxy settings",
+    ),
+    "retroChooseRoute": MessageLookupByLibrary.simpleMessage("Choose route"),
+    "retroDirectHint": MessageLookupByLibrary.simpleMessage(
+      "Direct mode does not use proxy routes. Switch to Rule or Global to choose a route.",
+    ),
     "retroHome": MessageLookupByLibrary.simpleMessage("Home"),
+    "retroImportFirst": MessageLookupByLibrary.simpleMessage(
+      "Import a profile, then choose a route",
+    ),
+    "retroRequestFailed": MessageLookupByLibrary.simpleMessage(
+      "Request failed. Check details before retrying.",
+    ),
+    "retroRequestPending": MessageLookupByLibrary.simpleMessage(
+      "Submitting request…",
+    ),
+    "retroRetry": MessageLookupByLibrary.simpleMessage("Retry"),
+    "retroRunRequested": MessageLookupByLibrary.simpleMessage(
+      "Start requested · Check connectivity in Tools",
+    ),
+    "retroStopped": MessageLookupByLibrary.simpleMessage(
+      "Stopped · Tap the circle to connect",
+    ),
     "routeAddress": MessageLookupByLibrary.simpleMessage("Route address"),
     "routeAddressDesc": MessageLookupByLibrary.simpleMessage(
       "Config listen route address",

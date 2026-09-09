@@ -39,6 +39,6 @@ class _RetroHomePageState extends ConsumerState<RetroHomePage> {
 
   @override
   Widget build(BuildContext context) => HomeBackScopeContainer(
-    child: ClassicHomeView(originalLayout: false, onOpenPage: _openAdvanced),
+    child: ClassicHomeView(onOpenPage: _openAdvanced),
   );
 }

@@ -21,6 +21,11 @@ Future<ProviderContainer> mountHome(
   WidgetTester tester,
   Size size, {
   double textScale = 1,
+  Profile? profile,
+  List<Group> groups = const [],
+  SetupAction? setupAction,
+  ProxiesAction? proxiesAction,
+  ProfilesAction? profilesAction,
 }) async {
   tester.view.physicalSize = size;
   tester.view.devicePixelRatio = 1;
@@ -28,6 +33,14 @@ Future<ProviderContainer> mountHome(
   addTearDown(tester.view.resetDevicePixelRatio);
   final container = ProviderContainer(
     overrides: [
+      currentProfileProvider.overrideWithValue(profile),
+      groupsProvider.overrideWithBuild((_, _) => groups),
+      if (setupAction != null)
+        setupActionProvider.overrideWith(() => setupAction),
+      if (proxiesAction != null)
+        proxiesActionProvider.overrideWith(() => proxiesAction),
+      if (profilesAction != null)
+        profilesActionProvider.overrideWith(() => profilesAction),
       dashboardStateProvider.overrideWithValue(
         const DashboardState(dashboardWidgets: []),
       ),
@@ -96,6 +109,16 @@ Future<ProviderContainer> mountHome(
 }
 
 void main() {
+  testWidgets('普通手机横屏无需滚动即可看到三个完整快捷入口', (tester) async {
+    await mountHome(tester, const Size(844, 390));
+    for (final label in ['代理', '配置', '工具']) {
+      final target = find.text(label).hitTestable();
+      expect(target, findsOneWidget);
+      expect(tester.getBottomRight(target).dy, lessThanOrEqualTo(390));
+    }
+    expect(tester.takeException(), isNull);
+  });
+
   for (final size in [
     const Size(320, 640),
     const Size(390, 844),
@@ -135,12 +158,6 @@ void main() {
     testWidgets('启动首先展示复古设计 ${size.width} × ${size.height}', (tester) async {
       await mountHome(tester, size);
       expect(find.byType(ClassicHomeView), findsOneWidget);
-      expect(
-        tester
-            .widget<ClassicHomeView>(find.byType(ClassicHomeView))
-            .originalLayout,
-        isFalse,
-      );
       expect(find.byType(RetroDashboardPanel), findsOneWidget);
       expect(
         find.text(AppLocalizations.current.classicPermanent),
@@ -178,42 +195,6 @@ void main() {
     });
   }
 
-  testWidgets('原 APK 经典页是附加入口，返回不丢复古功能主页', (tester) async {
-    await mountHome(tester, const Size(390, 844));
-    await tester.tap(find.byTooltip(AppLocalizations.current.classicHome));
-    await tester.pumpAndSettle();
-    expect(
-      tester
-          .widget<ClassicHomeView>(find.byType(ClassicHomeView))
-          .originalLayout,
-      isTrue,
-    );
-    expect(find.byType(RetroDashboardPanel), findsNothing);
-    expect(
-      find.text(AppLocalizations.current.classicPermanent),
-      findsOneWidget,
-    );
-    await tester.binding.handlePopRoute();
-    await tester.pumpAndSettle();
-    expect(find.byType(RetroDashboardPanel), findsOneWidget);
-    expect(globalState.navigatorKey.currentState!.canPop(), isFalse);
-  });
-
-  testWidgets('从原 APK 经典页打开配置后返回默认功能主页', (tester) async {
-    await mountHome(tester, const Size(1280, 800));
-    await tester.tap(find.byTooltip(AppLocalizations.current.classicHome));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byType(HomeConnectButton));
-    await tester.pumpAndSettle();
-    expect(find.text('配置内容'), findsOneWidget);
-    await tester.binding.handlePopRoute();
-    await tester.pumpAndSettle();
-    expect(find.byType(RetroDashboardPanel), findsOneWidget);
-    expect(find.byType(ClassicHomeView, skipOffstage: false), findsOneWidget);
-    expect(globalState.navigatorKey.currentState!.canPop(), isFalse);
-    expect(tester.takeException(), isNull);
-  });
-
   testWidgets('手机横屏大字可滚动到全部快捷入口', (tester) async {
     await mountHome(tester, const Size(640, 320), textScale: 2);
     expect(find.byKey(const ValueKey('retro-functional-wide')), findsOneWidget);
@@ -236,17 +217,5 @@ void main() {
     expect(find.byType(ClassicHomeView), findsOneWidget);
     expect(container.read(currentPageLabelProvider), PageLabel.dashboard);
     expect(tester.takeException(), isNull);
-  });
-
-  testWidgets('仪表盘房子按钮回到已有主页而不是再叠一层', (tester) async {
-    await mountHome(tester, const Size(390, 844));
-    await tester.tap(find.byIcon(Icons.menu));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('仪表盘'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byTooltip(AppLocalizations.current.classicHome));
-    await tester.pumpAndSettle();
-    expect(find.byType(ClassicHomeView, skipOffstage: false), findsOneWidget);
-    expect(globalState.navigatorKey.currentState!.canPop(), isFalse);
   });
 }

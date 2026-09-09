@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/providers.dart';
@@ -5,8 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'home_motion.dart';
+import 'retro_connection.dart';
+import 'retro_line_control.dart';
+import 'retro_routes.dart';
 
 const retroBlue = Color(0xFF3E5D9C);
+const retroFooter = Color(0xB1FFFFFF);
 const _orange = Color(0xFFFF7901);
 
 class RetroDashboardPanel extends ConsumerWidget {
@@ -33,10 +39,16 @@ class RetroDashboardPanel extends ConsumerWidget {
     final selected = groupName == null
         ? null
         : ref.watch(selectedProxyNameProvider(groupName));
-    final hasGroups = ref.watch(currentGroupsStateProvider).value.isNotEmpty;
     void toPage(PageLabel page) {
-      final target =
-          page == PageLabel.proxies && (!hasGroups || profile == null)
+      final hasProfile = ref.read(currentProfileProvider) != null;
+      if (page == PageLabel.proxies &&
+          hasProfile &&
+          ref.read(patchClashConfigProvider).mode == Mode.direct) {
+        showRetroRoutes(context, ref, toPage);
+        return;
+      }
+      final hasGroups = ref.read(currentGroupsStateProvider).value.isNotEmpty;
+      final target = page == PageLabel.proxies && (!hasGroups || !hasProfile)
           ? PageLabel.profiles
           : page;
       if (onOpenPage != null) {
@@ -57,20 +69,13 @@ class RetroDashboardPanel extends ConsumerWidget {
               constraints.maxWidth >= 650 ||
               (landscape && constraints.maxWidth >= 520);
           final button = HomeEntrance(
-            child: HomeConnectButton(
+            child: RetroConnectionControl(
               size: tablet
                   ? 240
                   : landscape
                   ? 160
                   : 200,
-              running: running,
-              onPressed: () {
-                if (!running && profile == null) {
-                  toPage(PageLabel.profiles);
-                  return;
-                }
-                ref.read(commonActionProvider.notifier).toggleRunning();
-              },
+              onOpenProfiles: () => toPage(PageLabel.profiles),
             ),
           );
           final controls = HomeEntrance(
@@ -80,30 +85,19 @@ class RetroDashboardPanel extends ConsumerWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: OutlinedButton.icon(
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      side: const BorderSide(color: Colors.white54),
-                      minimumSize: const Size(double.infinity, 48),
-                    ),
-                    onPressed: () => toPage(PageLabel.proxies),
-                    icon: const Icon(Icons.public),
-                    label: Text(
-                      '${strings.proxies} · ${profile == null
-                          ? strings.classicNoLine
-                          : mode == Mode.direct
-                          ? strings.direct
-                          : mode == Mode.rule
-                          ? strings.classicRulesLine
-                          : selected ?? strings.classicNoLine}',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
-                    ),
+                  child: RetroLineControl(
+                    onChange: () => showRetroRoutes(context, ref, toPage),
+                    line: profile == null
+                        ? strings.classicNoLine
+                        : mode == Mode.direct
+                        ? strings.direct
+                        : mode == Mode.rule
+                        ? '${strings.classicRulesLine}${selected?.isNotEmpty == true ? ' · $selected' : ''}'
+                        : selected ?? strings.classicNoLine,
                   ),
                 ),
                 TextButton(
-                  style: TextButton.styleFrom(foregroundColor: Colors.white70),
+                  style: TextButton.styleFrom(foregroundColor: Colors.white),
                   onPressed: () => toPage(PageLabel.profiles),
                   child: Text(
                     '${strings.profiles} · ${profile?.label ?? strings.nullProfileDesc}',
@@ -122,12 +116,20 @@ class RetroDashboardPanel extends ConsumerWidget {
                             child: TextButton(
                               style: TextButton.styleFrom(
                                 foregroundColor: mode == item
-                                    ? retroBlue
+                                    ? _orange
                                     : Colors.white,
                                 backgroundColor: mode == item
                                     ? Colors.white
-                                    : Colors.white12,
+                                    : Colors.transparent,
                                 minimumSize: const Size(0, 48),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                side: BorderSide(
+                                  color: mode == item
+                                      ? _orange
+                                      : Colors.white38,
+                                ),
                               ),
                               onPressed: () => ref
                                   .read(setupActionProvider.notifier)
@@ -151,7 +153,14 @@ class RetroDashboardPanel extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 28),
+                padding: EdgeInsets.only(
+                  top: tablet
+                      ? math.max(48, (constraints.minHeight - 460) / 2)
+                      : landscape
+                      ? 12
+                      : 48,
+                  bottom: landscape ? 12 : 24,
+                ),
                 child: split
                     ? Row(
                         key: const ValueKey('retro-functional-wide'),
@@ -164,7 +173,7 @@ class RetroDashboardPanel extends ConsumerWidget {
                         key: const ValueKey('retro-functional-phone'),
                         children: [
                           button,
-                          const SizedBox(height: 24),
+                          const SizedBox(height: 32),
                           controls,
                         ],
                       ),
@@ -172,14 +181,17 @@ class RetroDashboardPanel extends ConsumerWidget {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const SizedBox(
-                    height: 40,
+                  SizedBox(
+                    height: landscape ? 24 : 60,
                     width: double.infinity,
-                    child: HomeWave(color: Color(0xFFEDF1F8)),
+                    child: const HomeWave(color: retroFooter),
                   ),
                   Container(
-                    color: const Color(0xFFEDF1F8),
-                    padding: const EdgeInsets.only(bottom: 16, top: 8),
+                    color: retroFooter,
+                    padding: EdgeInsets.only(
+                      bottom: landscape ? 8 : 16,
+                      top: 8,
+                    ),
                     child: Row(
                       children: [
                         for (final link in [
@@ -199,25 +211,37 @@ class RetroDashboardPanel extends ConsumerWidget {
                             child: HomePress(
                               onTap: () => toPage(link.$3),
                               child: Padding(
-                                padding: const EdgeInsets.all(8),
+                                padding: EdgeInsets.all(
+                                  landscape && !tablet ? 4 : 8,
+                                ),
                                 child: Column(
                                   children: [
                                     Container(
-                                      padding: const EdgeInsets.all(12),
+                                      padding: EdgeInsets.all(
+                                        landscape && !tablet ? 8 : 12,
+                                      ),
                                       decoration: BoxDecoration(
                                         color: _orange,
-                                        borderRadius: BorderRadius.circular(8),
+                                        borderRadius: BorderRadius.circular(6),
                                       ),
                                       child: Icon(
                                         link.$1,
                                         color: Colors.white,
-                                        size: 28,
+                                        size: tablet
+                                            ? 36
+                                            : landscape
+                                            ? 24
+                                            : 32,
                                       ),
                                     ),
-                                    const SizedBox(height: 8),
+                                    SizedBox(height: landscape ? 6 : 8),
                                     Text(
                                       link.$2,
-                                      style: const TextStyle(color: retroBlue),
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        color: Color(0xFF3C3C3C),
+                                        fontSize: 14,
+                                      ),
                                     ),
                                   ],
                                 ),

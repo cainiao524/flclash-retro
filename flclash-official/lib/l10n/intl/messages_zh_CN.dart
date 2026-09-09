@@ -566,7 +566,25 @@ class MessageLookup extends MessageLookupByLibrary {
     "restoreStrategy_compatible": MessageLookupByLibrary.simpleMessage("兼容"),
     "restoreStrategy_override": MessageLookupByLibrary.simpleMessage("覆盖"),
     "restoreSuccess": MessageLookupByLibrary.simpleMessage("恢复成功"),
+    "retroAllProxies": MessageLookupByLibrary.simpleMessage("完整代理设置与测速"),
+    "retroAutomaticGroup": MessageLookupByLibrary.simpleMessage(
+      "自动策略组，请在完整代理设置中管理",
+    ),
+    "retroChooseRoute": MessageLookupByLibrary.simpleMessage("选择线路"),
+    "retroDirectHint": MessageLookupByLibrary.simpleMessage(
+      "直连模式不使用代理线路。请切换到规则或全局模式后选择。",
+    ),
     "retroHome": MessageLookupByLibrary.simpleMessage("主页"),
+    "retroImportFirst": MessageLookupByLibrary.simpleMessage("先导入配置，再选择线路"),
+    "retroRequestFailed": MessageLookupByLibrary.simpleMessage(
+      "操作未完成，请查看详情后重试",
+    ),
+    "retroRequestPending": MessageLookupByLibrary.simpleMessage("正在提交操作…"),
+    "retroRetry": MessageLookupByLibrary.simpleMessage("重试"),
+    "retroRunRequested": MessageLookupByLibrary.simpleMessage(
+      "已请求开启 · 连通性请在工具中检测",
+    ),
+    "retroStopped": MessageLookupByLibrary.simpleMessage("未开启 · 点击圆盘连接"),
     "routeAddress": MessageLookupByLibrary.simpleMessage("路由地址"),
     "routeAddressDesc": MessageLookupByLibrary.simpleMessage("配置监听路由地址"),
     "routeMode": MessageLookupByLibrary.simpleMessage("路由模式"),

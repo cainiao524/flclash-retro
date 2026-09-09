@@ -6,7 +6,6 @@ import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/views/dashboard/dashboard.dart';
-import 'package:fl_clash/views/dashboard/classic_home.dart';
 import 'package:fl_clash/views/dashboard/widgets/retro_dashboard.dart';
 import 'package:fl_clash/widgets/grid.dart';
 import 'package:flutter/material.dart';
@@ -84,12 +83,6 @@ void main() {
     expect(tester.getSize(grid).width, 1120);
     expect(tester.getTopLeft(grid).dx, 240);
     expect(tester.takeException(), null);
-    final context = tester.element(find.byType(DashboardView));
-    await tester.tap(find.byTooltip(context.appLocalizations.classicHome));
-    await tester.pumpAndSettle();
-    expect(find.byType(ClassicHomeView), findsOneWidget);
-    expect(find.byType(Grid), findsNothing);
-    expect(find.byType(Grid, skipOffstage: false), findsOneWidget);
     expect(tester.takeException(), null);
   });
 }

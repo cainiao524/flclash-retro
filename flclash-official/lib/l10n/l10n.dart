@@ -54,6 +54,101 @@ class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
+  /// `Retry`
+  String get retroRetry {
+    return Intl.message('Retry', name: 'retroRetry', desc: '', args: []);
+  }
+
+  /// `Direct mode does not use proxy routes. Switch to Rule or Global to choose a route.`
+  String get retroDirectHint {
+    return Intl.message(
+      'Direct mode does not use proxy routes. Switch to Rule or Global to choose a route.',
+      name: 'retroDirectHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose route`
+  String get retroChooseRoute {
+    return Intl.message(
+      'Choose route',
+      name: 'retroChooseRoute',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Automatic group; manage it in full proxy settings`
+  String get retroAutomaticGroup {
+    return Intl.message(
+      'Automatic group; manage it in full proxy settings',
+      name: 'retroAutomaticGroup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All proxy settings and latency tests`
+  String get retroAllProxies {
+    return Intl.message(
+      'All proxy settings and latency tests',
+      name: 'retroAllProxies',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request failed. Check details before retrying.`
+  String get retroRequestFailed {
+    return Intl.message(
+      'Request failed. Check details before retrying.',
+      name: 'retroRequestFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Submitting request…`
+  String get retroRequestPending {
+    return Intl.message(
+      'Submitting request…',
+      name: 'retroRequestPending',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start requested · Check connectivity in Tools`
+  String get retroRunRequested {
+    return Intl.message(
+      'Start requested · Check connectivity in Tools',
+      name: 'retroRunRequested',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stopped · Tap the circle to connect`
+  String get retroStopped {
+    return Intl.message(
+      'Stopped · Tap the circle to connect',
+      name: 'retroStopped',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import a profile, then choose a route`
+  String get retroImportFirst {
+    return Intl.message(
+      'Import a profile, then choose a route',
+      name: 'retroImportFirst',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Home`
   String get retroHome {
     return Intl.message('Home', name: 'retroHome', desc: '', args: []);

@@ -857,7 +857,33 @@ class MessageLookup extends MessageLookupByLibrary {
     "restoreSuccess": MessageLookupByLibrary.simpleMessage(
       "Восстановление успешно",
     ),
+    "retroAllProxies": MessageLookupByLibrary.simpleMessage(
+      "Все настройки прокси и проверка задержки",
+    ),
+    "retroAutomaticGroup": MessageLookupByLibrary.simpleMessage(
+      "Автоматическая группа. Управляйте ей в настройках прокси.",
+    ),
+    "retroChooseRoute": MessageLookupByLibrary.simpleMessage("Выбор маршрута"),
+    "retroDirectHint": MessageLookupByLibrary.simpleMessage(
+      "Прямой режим не использует прокси. Для выбора маршрута включите правила или глобальный режим.",
+    ),
     "retroHome": MessageLookupByLibrary.simpleMessage("Главная"),
+    "retroImportFirst": MessageLookupByLibrary.simpleMessage(
+      "Импортируйте профиль и выберите маршрут",
+    ),
+    "retroRequestFailed": MessageLookupByLibrary.simpleMessage(
+      "Запрос не выполнен. Проверьте подробности.",
+    ),
+    "retroRequestPending": MessageLookupByLibrary.simpleMessage(
+      "Отправка запроса…",
+    ),
+    "retroRetry": MessageLookupByLibrary.simpleMessage("Повторить"),
+    "retroRunRequested": MessageLookupByLibrary.simpleMessage(
+      "Запуск запрошен · Проверьте связь в инструментах",
+    ),
+    "retroStopped": MessageLookupByLibrary.simpleMessage(
+      "Остановлено · Нажмите круг для подключения",
+    ),
     "routeAddress": MessageLookupByLibrary.simpleMessage("Адрес маршрутизации"),
     "routeAddressDesc": MessageLookupByLibrary.simpleMessage(
       "Настройка адреса прослушивания маршрутизации",

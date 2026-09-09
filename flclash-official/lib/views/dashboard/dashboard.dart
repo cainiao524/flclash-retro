@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'widgets/core_status_button.dart';
-import 'classic_home.dart';
 import 'widgets/start_button.dart';
 
 typedef _IsEditWidgetBuilder = Widget Function(bool isEdit);
@@ -48,23 +47,6 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
 
   List<Widget> _buildActions(bool isEdit) {
     return [
-      if (!isEdit)
-        IconButton(
-          tooltip: context.appLocalizations.classicHome,
-          icon: const Icon(Icons.home_outlined),
-          onPressed: () {
-            final navigator = Navigator.of(context, rootNavigator: true);
-            if (navigator.canPop()) {
-              navigator.popUntil((route) => route.isFirst);
-            } else {
-              navigator.push(
-                MaterialPageRoute<void>(
-                  builder: (_) => const ClassicHomeView(),
-                ),
-              );
-            }
-          },
-        ),
       if (!isEdit && coreLib == null) const CoreStatusButton(),
       if (isEdit)
         ValueListenableBuilder(

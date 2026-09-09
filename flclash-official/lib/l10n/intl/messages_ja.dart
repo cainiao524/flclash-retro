@@ -646,7 +646,27 @@ class MessageLookup extends MessageLookupByLibrary {
     "restoreStrategy_compatible": MessageLookupByLibrary.simpleMessage("互換"),
     "restoreStrategy_override": MessageLookupByLibrary.simpleMessage("上書き"),
     "restoreSuccess": MessageLookupByLibrary.simpleMessage("復元に成功しました"),
+    "retroAllProxies": MessageLookupByLibrary.simpleMessage("すべてのプロキシ設定と遅延テスト"),
+    "retroAutomaticGroup": MessageLookupByLibrary.simpleMessage(
+      "自動グループです。プロキシ設定で管理してください",
+    ),
+    "retroChooseRoute": MessageLookupByLibrary.simpleMessage("ルートを選択"),
+    "retroDirectHint": MessageLookupByLibrary.simpleMessage(
+      "ダイレクトモードではプロキシを使用しません。ルールまたはグローバルに切り替えてください。",
+    ),
     "retroHome": MessageLookupByLibrary.simpleMessage("ホーム"),
+    "retroImportFirst": MessageLookupByLibrary.simpleMessage(
+      "設定をインポートしてルートを選択してください",
+    ),
+    "retroRequestFailed": MessageLookupByLibrary.simpleMessage(
+      "操作に失敗しました。詳細を確認して再試行してください。",
+    ),
+    "retroRequestPending": MessageLookupByLibrary.simpleMessage("操作を送信中…"),
+    "retroRetry": MessageLookupByLibrary.simpleMessage("再試行"),
+    "retroRunRequested": MessageLookupByLibrary.simpleMessage(
+      "開始を要求済み · ツールで接続を確認してください",
+    ),
+    "retroStopped": MessageLookupByLibrary.simpleMessage("停止中 · 円をタップして接続"),
     "routeAddress": MessageLookupByLibrary.simpleMessage("ルートアドレス"),
     "routeAddressDesc": MessageLookupByLibrary.simpleMessage("ルートアドレスを設定"),
     "routeMode": MessageLookupByLibrary.simpleMessage("ルートモード"),

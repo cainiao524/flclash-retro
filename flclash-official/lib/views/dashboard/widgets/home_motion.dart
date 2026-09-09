@@ -146,12 +146,14 @@ class HomeEntrance extends StatelessWidget {
 class HomePress extends StatefulWidget {
   final VoidCallback onTap;
   final ShapeBorder? shape;
+  final Color? surfaceColor;
   final Widget child;
 
   const HomePress({
     super.key,
     required this.onTap,
     this.shape,
+    this.surfaceColor,
     required this.child,
   });
 
@@ -176,12 +178,19 @@ class _HomePressState extends State<HomePress> {
           : 1,
       duration: reduced ? Duration.zero : const Duration(milliseconds: 160),
       curve: Curves.easeOutCubic,
-      child: InkWell(
-        customBorder: widget.shape,
-        onHighlightChanged: (value) => setState(() => _pressed = value),
-        onHover: (value) => setState(() => _hovered = value),
-        onTap: widget.onTap,
-        child: widget.child,
+      child: Material(
+        color: widget.surfaceColor ?? Colors.transparent,
+        shape: widget.shape,
+        child: InkWell(
+          customBorder: widget.shape,
+          highlightColor: widget.surfaceColor == null
+              ? null
+              : const Color(0xFFEDEDED),
+          onHighlightChanged: (value) => setState(() => _pressed = value),
+          onHover: (value) => setState(() => _hovered = value),
+          onTap: widget.onTap,
+          child: widget.child,
+        ),
       ),
     );
   }
@@ -206,85 +215,72 @@ class HomeConnectButton extends StatelessWidget {
     return Semantics(
       button: true,
       label: running ? strings.stopVpn : strings.startVpn,
+      excludeSemantics: true,
       child: SizedBox(
         width: size,
         height: size,
-        child: HomePress(
-          shape: const CircleBorder(),
-          onTap: onPressed,
-          child: Stack(
-            fit: StackFit.expand,
-            alignment: Alignment.center,
-            children: [
-              Image.asset(
-                'assets/images/retro/new_startroot_waibiankuanng.png',
-                excludeFromSemantics: true,
+        child: Stack(
+          clipBehavior: Clip.none,
+          fit: StackFit.expand,
+          children: [
+            IgnorePointer(
+              child: RepaintBoundary(
+                child: TweenAnimationBuilder<double>(
+                  tween: Tween(end: running && !motion.reduced ? 1 : 0),
+                  duration: motion.reduced
+                      ? Duration.zero
+                      : const Duration(milliseconds: 400),
+                  builder: (_, active, _) => CustomPaint(
+                    painter: _ConnectHalo(phase: motion.phase, active: active),
+                  ),
+                ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: Material(
-                  color: Colors.transparent,
+            ),
+            DecoratedBox(
+              decoration: const BoxDecoration(
+                color: Color(0x91FFFFFF),
+                shape: BoxShape.circle,
+              ),
+              child: Padding(
+                padding: EdgeInsets.all(size * .04),
+                child: HomePress(
+                  surfaceColor: Colors.white,
                   shape: const CircleBorder(),
-                  clipBehavior: Clip.antiAlias,
-                  child: Ink.image(
-                    image: const AssetImage(
-                      'assets/images/retro/new_startroot_normal.png',
-                    ),
-                    fit: BoxFit.contain,
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              AnimatedSwitcher(
-                                duration: motion.reduced
-                                    ? Duration.zero
-                                    : const Duration(milliseconds: 220),
-                                switchInCurve: Curves.easeOut,
-                                switchOutCurve: Curves.easeIn,
-                                child: Text(
-                                  running ? strings.stop : strings.connection,
-                                  key: ValueKey(running),
-                                  style: const TextStyle(
-                                    color: _orange,
-                                    fontSize: 35,
-                                  ),
+                  onTap: onPressed,
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            AnimatedSwitcher(
+                              duration: motion.reduced
+                                  ? Duration.zero
+                                  : const Duration(milliseconds: 220),
+                              child: Text(
+                                running ? strings.stop : strings.connection,
+                                key: ValueKey(running),
+                                style: const TextStyle(
+                                  color: _orange,
+                                  fontSize: 35,
                                 ),
                               ),
-                              const Text(
-                                'VPN',
-                                style: TextStyle(color: _orange, fontSize: 18),
-                              ),
-                            ],
-                          ),
+                            ),
+                            const Text(
+                              'VPN',
+                              style: TextStyle(color: _orange, fontSize: 18),
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   ),
                 ),
               ),
-              IgnorePointer(
-                child: RepaintBoundary(
-                  child: TweenAnimationBuilder<double>(
-                    tween: Tween(end: running ? 1 : 0),
-                    duration: motion.reduced
-                        ? Duration.zero
-                        : const Duration(milliseconds: 400),
-                    curve: Curves.easeOutCubic,
-                    builder: (_, active, _) => CustomPaint(
-                      painter: _ConnectHalo(
-                        phase: motion.phase,
-                        active: active,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -302,29 +298,15 @@ class _ConnectHalo extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (active == 0) return;
     final center = size.center(Offset.zero);
-    final pulse = (math.sin(phase.value * math.pi * 4) + 1) / 2;
-    final radius = size.shortestSide * .465;
+    final progress = (phase.value * 3) % 1;
+    final radius = size.shortestSide * .5 * (1 + .4 * progress);
     canvas.drawCircle(
       center,
       radius,
       Paint()
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 4 + pulse * 3
-        ..color = Colors.white.withValues(alpha: active * (.16 + pulse * .14)),
-    );
-    final paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = 2.5
-      ..color = _orange.withValues(alpha: active * .8);
-    final bounds = Rect.fromCircle(center: center, radius: radius);
-    canvas.drawArc(bounds, phase.value * math.pi * 2, .7, false, paint);
-    canvas.drawArc(
-      bounds,
-      phase.value * math.pi * 2 + math.pi,
-      .7,
-      false,
-      paint,
+        ..strokeWidth = 6 * (1 - progress) + 1
+        ..color = Colors.white.withValues(alpha: active * (1 - progress) * .5),
     );
   }
 
@@ -379,7 +361,7 @@ class HomeWavePainter extends CustomPainter {
         path,
         Paint()
           ..color = layer == 2
-              ? color
+              ? Color.alphaBlend(color, const Color(0xFF3E5D9C))
               : Colors.white.withValues(alpha: .09 + layer * .04),
       );
     }
